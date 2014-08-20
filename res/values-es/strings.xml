@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hola, simpleLocation!</string>
+    <string name="lib_name">simpleLocation</string>
+    <string name="ask_location">Por favor, active los servicios de ubicación</string>
+    <string name="settings">Configuración</string>
+    <string name="cancel">Cancelar</string>
+    <string name="setting_location">Activar ubicación</string>
+</resources>

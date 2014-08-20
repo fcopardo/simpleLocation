@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
+import com.simpleFunctions.android.R;
 
 import java.util.List;
 import java.util.Locale;
@@ -51,22 +52,30 @@ public class GeoLocation extends Service implements LocationListener {
         getLocation();
     }
 
+    public boolean isEnabled() {
+
+        locationManager = (LocationManager) myContext
+                .getSystemService(LOCATION_SERVICE);
+
+        // getting GPS status
+        isGPSEnabled = locationManager
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        // getting network status
+        isNetworkEnabled = locationManager
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if(!isGPSEnabled && !isNetworkEnabled) return false;
+        else return true;
+
+    }
+
     public Location getLocation() {
         try {
-            locationManager = (LocationManager) myContext
-                    .getSystemService(LOCATION_SERVICE);
+            if(!isEnabled()) showSettingsAlert();
 
-            // getting GPS status
-            isGPSEnabled = locationManager
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-            // getting network status
-            isNetworkEnabled = locationManager
-                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-            if (!isGPSEnabled && !isNetworkEnabled) {
-                // no network provider is enabled
-            } else {
+            if(isEnabled())
+            {
                 this.canGetLocation = true;
                 // First get location from Network Provider
                 if (isNetworkEnabled) {
@@ -217,13 +226,13 @@ public class GeoLocation extends Service implements LocationListener {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(myContext);
 
         // Setting Dialog Title
-        alertDialog.setTitle("GPS is settings");
+        alertDialog.setTitle(R.string.setting_location);
 
         // Setting Dialog Message
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+        alertDialog.setMessage(R.string.ask_location);
 
         // On pressing Settings button
-        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 myContext.startActivity(intent);
@@ -231,7 +240,7 @@ public class GeoLocation extends Service implements LocationListener {
         });
 
         // on pressing cancel button
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
