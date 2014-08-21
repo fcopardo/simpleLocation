@@ -22,7 +22,13 @@
 			<version>${platform.version}</version>
 			<scope>provided</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>com.google.android.maps</groupId>
+            <artifactId>maps</artifactId>
+            <version>16_r3</version>
+        </dependency>
+
+    </dependencies>
 
 	<build>
 		<plugins>

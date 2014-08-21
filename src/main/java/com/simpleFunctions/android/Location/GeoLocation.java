@@ -6,12 +6,17 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.location.*;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapView;
+import com.google.android.maps.Projection;
 import com.simpleFunctions.android.R;
 
 import java.util.List;
@@ -269,6 +274,26 @@ public class GeoLocation extends Service implements LocationListener {
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
+    }
+
+    public screenPoints getScreenPoints(MapView mapView){
+
+        float pisteX;
+        float pisteY;
+
+        Projection projection = mapView.getProjection();
+
+        Point pt = new Point();
+        GeoPoint gie = new GeoPoint((int)latitude, (int)longitude);
+        projection.toPixels(gie, pt);
+        pisteX = pt.x;
+        pisteY = pt.y;
+
+        screenPoints screen = new screenPoints();
+        screen.setX(pisteX);
+        screen.setY(pisteY);
+
+        return screen;
     }
 
 }
