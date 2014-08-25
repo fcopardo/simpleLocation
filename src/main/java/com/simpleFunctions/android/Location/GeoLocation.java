@@ -146,6 +146,66 @@ public class GeoLocation extends Service implements LocationListener {
     }
 
     /**
+     * Allows to get the address where the device is, based in location data.
+     * @return a String
+     */
+    public String getLocality() {
+
+        Geocoder geocoder = new Geocoder(myContext, Locale.getDefault());
+        try {
+            List<Address> place = geocoder.getFromLocation(getLatitude(), getLongitude(), 1);
+            if (place.size() > 0) {
+                String referencePoint = place.get(0).getLocality();
+                return referencePoint;
+            }
+            return "Here";
+        } catch (java.io.IOException | NullPointerException e) {
+            return "";
+        }
+    }
+
+    /**
+     * Allows to get the address where the device is, based in location data.
+     * @return a String
+     */
+    public String getLocality(Double latitude, Double longitude) {
+
+        Geocoder geocoder = new Geocoder(myContext, Locale.getDefault());
+        try {
+            List<Address> place = geocoder.getFromLocation(latitude, longitude, 1);
+            if (place.size() > 0) {
+                String referencePoint = place.get(0).getCountryName() + " " +
+                        place.get(0).getLocality() + " " + place.get(0).getAddressLine(0);
+                return referencePoint;
+            }
+            return "Here";
+        } catch (java.io.IOException | NullPointerException e) {
+            return "";
+        }
+    }
+
+    /**
+     * Allows to get the address where the device is, based in location data.
+     * @return a String
+     */
+    public String getAddress(Double latitude, Double longitude) {
+
+        Geocoder geocoder = new Geocoder(myContext, Locale.getDefault());
+        try {
+            List<Address> place = geocoder.getFromLocation(latitude, longitude, 1);
+            if (place.size() > 0) {
+                String referencePoint = place.get(0).getCountryName() + " " +
+                        place.get(0).getLocality() + " " + place.get(0).getAddressLine(0);
+                return referencePoint;
+            }
+            return "Here";
+        } catch (java.io.IOException | NullPointerException e) {
+            return "";
+        }
+    }
+
+
+    /**
      * Testing method. Determines if the conduct of the getAddress() Method is callable.
      * @return
      */
@@ -202,6 +262,10 @@ public class GeoLocation extends Service implements LocationListener {
         return latitude;
     }
 
+    public void setLatitude(Double Latitude){
+        latitude = Latitude;
+    }
+
     /**
      * Allows to get the current longitude. The getLocation() method must be called at least once before.
      * @return a double representing the longitude.
@@ -213,6 +277,30 @@ public class GeoLocation extends Service implements LocationListener {
 
         // return longitude
         return longitude;
+    }
+
+    public void setLongitude(Double Longitude){
+        longitude = Longitude;
+    }
+
+    public screenPoints getScreenPoints(MapView mapView){
+
+        float pisteX;
+        float pisteY;
+
+        Projection projection = mapView.getProjection();
+
+        Point pt = new Point();
+        GeoPoint gie = new GeoPoint((int)latitude, (int)longitude);
+        projection.toPixels(gie, pt);
+        pisteX = pt.x;
+        pisteY = pt.y;
+
+        screenPoints screen = new screenPoints();
+        screen.setX(pisteX);
+        screen.setY(pisteY);
+
+        return screen;
     }
 
     /**
@@ -274,26 +362,6 @@ public class GeoLocation extends Service implements LocationListener {
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
-    }
-
-    public screenPoints getScreenPoints(MapView mapView){
-
-        float pisteX;
-        float pisteY;
-
-        Projection projection = mapView.getProjection();
-
-        Point pt = new Point();
-        GeoPoint gie = new GeoPoint((int)latitude, (int)longitude);
-        projection.toPixels(gie, pt);
-        pisteX = pt.x;
-        pisteY = pt.y;
-
-        screenPoints screen = new screenPoints();
-        screen.setX(pisteX);
-        screen.setY(pisteY);
-
-        return screen;
     }
 
 }
