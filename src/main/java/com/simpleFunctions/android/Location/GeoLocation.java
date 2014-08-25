@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.location.*;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -123,6 +122,44 @@ public class GeoLocation extends Service implements LocationListener {
         }
 
         return location;
+    }
+
+    /**
+     * Allows to get the locality where the device is, based in location data.
+     * @return a String
+     */
+    public String getLocality() {
+
+        Geocoder geocoder = new Geocoder(myContext, Locale.getDefault());
+        try {
+            List<Address> place = geocoder.getFromLocation(getLatitude(), getLongitude(), 1);
+            if (place.size() > 0) {
+                String locality = place.get(0).getLocality();
+                return locality;
+            }
+            return "Here";
+        } catch (java.io.IOException | NullPointerException e) {
+            return "";
+        }
+    }
+
+    /**
+     * Allows to get the locality where the device is, based in location data.
+     * @return a String
+     */
+    public String getLocalityByLatlng(Double lat, Double lng) {
+
+        Geocoder geocoder = new Geocoder(myContext, Locale.getDefault());
+        try {
+            List<Address> place = geocoder.getFromLocation(lat, lng, 1);
+            if (place.size() > 0) {
+                String locality = place.get(0).getLocality();
+                return locality;
+            }
+            return "Here";
+        } catch (java.io.IOException | NullPointerException e) {
+            return "";
+        }
     }
 
     /**
