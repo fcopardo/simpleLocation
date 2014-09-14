@@ -28,6 +28,7 @@ import java.util.Locale;
 public class GeoLocation extends Service implements LocationListener {
 
     private final Context myContext;
+    private final Activity myActivity;
 
     // flag for GPS status
     boolean isGPSEnabled = false;
@@ -37,6 +38,9 @@ public class GeoLocation extends Service implements LocationListener {
 
     // flag for GPS status
     boolean canGetLocation = false;
+
+    //flag for asking location services
+    boolean askedBefore = false;
 
     Location location; // location
     double latitude; // latitude
@@ -51,9 +55,18 @@ public class GeoLocation extends Service implements LocationListener {
     // Declaring a Location Manager
     protected LocationManager locationManager;
 
-    public GeoLocation(Context context) {
-        this.myContext = context;
+    public GeoLocation(Activity activity) {
+        this.myActivity = activity;
+        this.myContext = activity.getApplicationContext();
         getLocation();
+    }
+
+    /**
+     * Deactivates/Activates the automatic settings dialog call.
+     * @param bol True for not asking next time, false for asking.
+     */
+    public void setAskedBefore(boolean bol){
+        askedBefore = bol;
     }
 
     public boolean isEnabled() {
@@ -76,7 +89,7 @@ public class GeoLocation extends Service implements LocationListener {
 
     public Location getLocation() {
         try {
-            if(!isEnabled()) showSettingsAlert();
+            if(!isEnabled() && !askedBefore) showSettingsAlert();
 
             if(isEnabled())
             {
@@ -314,7 +327,8 @@ public class GeoLocation extends Service implements LocationListener {
      * Settings button will launch the Settings Options.
      * */
     public void showSettingsAlert(){
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(myContext);
+        askedBefore = true;
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(myActivity);
 
         // Setting Dialog Title
         alertDialog.setTitle(R.string.setting_location);
@@ -326,7 +340,7 @@ public class GeoLocation extends Service implements LocationListener {
         alertDialog.setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                myContext.startActivity(intent);
+                myActivity.startActivity(intent);
             }
         });
 
