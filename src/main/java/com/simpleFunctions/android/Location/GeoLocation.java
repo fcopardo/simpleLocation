@@ -61,6 +61,13 @@ public class GeoLocation extends Service implements LocationListener {
         getLocation();
     }
 
+    public GeoLocation(Activity activity, boolean showDialog) {
+        this.myActivity = activity;
+        this.myContext = activity.getApplicationContext();
+        setAskedBefore(showDialog);
+        getLocation();
+    }
+
     /**
      * Deactivates/Activates the automatic settings dialog call.
      * @param bol True for not asking next time, false for asking.
