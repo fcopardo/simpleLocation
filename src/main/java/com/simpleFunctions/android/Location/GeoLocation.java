@@ -56,8 +56,41 @@ public class GeoLocation extends Service implements LocationListener {
     protected LocationManager locationManager;
 
     public GeoLocation(Activity activity) {
+
+        Context myContext1;
         this.myActivity = activity;
-        this.myContext = activity.getApplicationContext();
+
+        try {
+            myContext1 = activity.getApplicationContext();
+        }
+        catch(NullPointerException e){
+            myContext1 = activity.getBaseContext();
+        }
+
+        this.myContext = myContext1;
+        getLocation();
+    }
+
+    public GeoLocation(Activity activity, boolean stopMessages) {
+        Context myContext1;
+        this.myActivity = activity;
+
+        try {
+            myContext1 = activity.getApplicationContext();
+        }
+        catch(NullPointerException e){
+            myContext1 = activity;
+        }
+
+        this.myContext = myContext1;
+        setAskedBefore(stopMessages);
+        getLocation();
+    }
+
+    public GeoLocation(Context context) {
+
+        this.myContext = context;
+        myActivity = null;
         getLocation();
     }
 
@@ -89,7 +122,7 @@ public class GeoLocation extends Service implements LocationListener {
 
     public Location getLocation() {
         try {
-            if(!isEnabled() && !askedBefore) showSettingsAlert();
+            if(!isEnabled() && !askedBefore && myActivity !=null) showSettingsAlert();
 
             if(isEnabled())
             {
@@ -327,32 +360,34 @@ public class GeoLocation extends Service implements LocationListener {
      * Settings button will launch the Settings Options.
      * */
     public void showSettingsAlert(){
-        askedBefore = true;
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(myActivity);
+        if(myActivity!=null){
+            askedBefore = true;
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(myActivity);
 
-        // Setting Dialog Title
-        alertDialog.setTitle(R.string.setting_location);
+            // Setting Dialog Title
+            alertDialog.setTitle(R.string.setting_location);
 
-        // Setting Dialog Message
-        alertDialog.setMessage(R.string.ask_location);
+            // Setting Dialog Message
+            alertDialog.setMessage(R.string.ask_location);
 
-        // On pressing Settings button
-        alertDialog.setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int which) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                myActivity.startActivity(intent);
-            }
-        });
+            // On pressing Settings button
+            alertDialog.setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog,int which) {
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    myActivity.startActivity(intent);
+                }
+            });
 
-        // on pressing cancel button
-        alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+            // on pressing cancel button
+            alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
 
-        // Showing Alert Message
-        alertDialog.show();
+            // Showing Alert Message
+            alertDialog.show();
+        }
     }
 
     @Override

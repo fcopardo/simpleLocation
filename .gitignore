@@ -25,3 +25,4 @@ proguard/
 target/
 .idea
 idea/
+*.iml
