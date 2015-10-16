@@ -94,6 +94,7 @@ public class GeoLocation extends Service implements LocationListener {
         getLocation();
     }
 
+
     /**
      * Deactivates/Activates the automatic settings dialog call.
      * @param bol True for not asking next time, false for asking.
