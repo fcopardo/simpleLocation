@@ -25,7 +25,7 @@
         <dependency>
             <groupId>com.google.android.maps</groupId>
             <artifactId>maps</artifactId>
-            <version>23_r1</version>
+            <version>22_r1</version>
         </dependency>
 
     </dependencies>
