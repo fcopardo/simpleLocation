@@ -1,5 +1,6 @@
 package com.simpleFunctions.android.Location;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
@@ -8,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
 import android.location.*;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
@@ -123,7 +125,7 @@ public class GeoLocation extends Service implements LocationListener {
 
     public Location getLocation() {
         try {
-            if(!isEnabled() && !askedBefore && myActivity !=null) showSettingsAlert();
+            if(!isEnabled() && !askedBefore && isActivityValid(myActivity)) showSettingsAlert();
 
             if(isEnabled())
             {
@@ -361,7 +363,7 @@ public class GeoLocation extends Service implements LocationListener {
      * Settings button will launch the Settings Options.
      * */
     public void showSettingsAlert(){
-        if(myActivity!=null){
+        if(isActivityValid(myActivity)){
             askedBefore = true;
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(myActivity);
 
@@ -389,6 +391,17 @@ public class GeoLocation extends Service implements LocationListener {
             // Showing Alert Message
             alertDialog.show();
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private boolean isActivityValid(Activity activity){
+        boolean result = true;
+
+        if(activity == null || activity.isDestroyed() || activity.isDestroyed()){
+            result = false;
+        }
+
+        return result;
     }
 
     @Override
