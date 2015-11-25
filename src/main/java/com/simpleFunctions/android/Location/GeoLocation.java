@@ -393,14 +393,20 @@ public class GeoLocation extends Service implements LocationListener {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private boolean isActivityValid(Activity activity){
         boolean result = true;
 
-        if(activity == null || activity.isDestroyed() || activity.isDestroyed()){
-            result = false;
-        }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
 
+            if(activity == null || activity.isFinishing() || activity.isDestroyed() ){
+                result = false;
+            }
+        }
+        else{
+            if(activity == null || activity.isFinishing()){
+                result = false;
+            }
+        }
         return result;
     }
 
