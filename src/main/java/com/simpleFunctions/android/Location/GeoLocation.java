@@ -202,12 +202,35 @@ public class GeoLocation extends Service implements LocationListener {
         try {
             List<Address> place = geocoder.getFromLocation(lat, lng, 1);
             if (place.size() > 0) {
-                String locality = place.get(0).getLocality();
+                String locality;
+                if(place.get(0).getSubLocality()==null || place.get(0).getSubLocality().equalsIgnoreCase("")){
+                    locality = place.get(0).getLocality();
+                }else{
+                    locality = place.get(0).getSubLocality();
+                }
                 return locality;
             }
             return "Here";
         } catch (java.io.IOException | NullPointerException e) {
             return "";
+        }
+    }
+
+    /**
+     * Allows to get the locality where the device is, based in location data.
+     * @return a Place
+     */
+    public Address getFullLocalityByLatlng(Double lat, Double lng) {
+
+        Geocoder geocoder = new Geocoder(myContext, Locale.getDefault());
+        try {
+            List<Address> place = geocoder.getFromLocation(lat, lng, 1);
+            if (place.size() > 0) {
+                return place.get(0);
+            }
+            return null;
+        } catch (java.io.IOException | NullPointerException e) {
+            return null;
         }
     }
 
