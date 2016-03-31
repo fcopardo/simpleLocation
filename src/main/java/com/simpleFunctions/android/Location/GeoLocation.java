@@ -235,6 +235,20 @@ public class GeoLocation extends Service implements LocationListener {
     }
 
     /**
+     * Allows to get the localities around where the device is, based in location data.
+     * @return a Place
+     */
+    public List<Address> getFullLocalitiesByLatlng(Double lat, Double lng) {
+
+        Geocoder geocoder = new Geocoder(myContext, Locale.getDefault());
+        try {
+            return geocoder.getFromLocation(lat, lng, 1);
+        } catch (java.io.IOException | NullPointerException e) {
+            return null;
+        }
+    }
+
+    /**
      * Allows to get the address where the device is, based in location data.
      * @return a String
      */
